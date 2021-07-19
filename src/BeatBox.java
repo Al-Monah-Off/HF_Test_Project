@@ -3,6 +3,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 
 public class BeatBox {
@@ -48,6 +49,9 @@ public class BeatBox {
         downTempo.addActionListener(new MyDownTempoListener());
         buttonBox.add(downTempo);
 
+        JButton serializedButton = new JButton("Serialized");
+        serializedButton.addActionListener(new MySendListener());
+
         Box nameBox = new Box(BoxLayout.Y_AXIS);
         for (int i = 0; i < 16; i++) {
             nameBox.add(new Label(instrumentNames[i]));
@@ -91,7 +95,7 @@ public class BeatBox {
     }
 
     public void buildTrackAndStart(){
-        int[] trackList = null;
+        int[] trackList;
 
         sequence.deleteTrack(track);
         track = sequence.createTrack();
@@ -102,7 +106,7 @@ public class BeatBox {
             int key = instruments[i];
 
             for (int j = 0; j < 16; j++) {
-                JCheckBox jc = (JCheckBox) checkBoxList.get(j + (16 * i));
+                JCheckBox jc =  checkBoxList.get(j + (16 * i));
                 if (jc.isSelected()){
                     trackList[j] = key;
                 }else {
@@ -142,9 +146,10 @@ public class BeatBox {
             ShortMessage a = new ShortMessage();
             a.setMessage(comd,chan,one,two);
             event =new MidiEvent(a,tick);
-        } catch (Exception e) { }
+        } catch (Exception e) { e.printStackTrace();}
         return event;
     }
+
 
 
     private class MyStartListener implements ActionListener {
@@ -174,6 +179,21 @@ public class BeatBox {
         public void actionPerformed(ActionEvent e) {
             float tempoFactor = sequencer.getTempoFactor();
             sequencer.setTempoFactor((float) (tempoFactor * .97));
+        }
+    }
+
+    private class MySendListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            boolean[] checkBoxState = new boolean[256];
+
+            for (int i = 0; i < 256; i++) {
+                JCheckBox check = checkBoxList.get(i);
+                if (check.isSelected()){
+                    checkBoxState[i] = true;
+                }
+            }
+
         }
     }
 }

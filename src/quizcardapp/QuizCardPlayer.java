@@ -6,14 +6,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 
 public class QuizCardPlayer {
 
     private JTextArea display;
-    private JTextArea answer;
+    //private JTextArea answer;
     private ArrayList<QuizCard> cardList;
     private QuizCard currentCard;
     private int currentCardIndex;
@@ -91,13 +90,13 @@ public class QuizCardPlayer {
         cardList = new ArrayList<>();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(selectedFile));
-            String line = null;
+            String line;
             while ((line = reader.readLine()) != null){
                 makeCard(line);
             }
             reader.close();
         } catch (Exception e){
-            System.out.println("couldn`t read the card file");
+            System.out.println("could not read the card file");
             e.printStackTrace();
         }
         showNextCard();
